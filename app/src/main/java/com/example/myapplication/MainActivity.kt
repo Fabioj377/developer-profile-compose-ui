@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.ui.theme.ProfilDeveloppeurTheme
 
 
 class MainActivity : ComponentActivity() {
@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            MyApplicationTheme {
+            ProfilDeveloppeurTheme {
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
@@ -196,7 +196,7 @@ fun ContactButton(
 @Preview(showBackground = true)
 @Composable
 fun DeveloperProfilePreview() {
-    MyApplicationTheme {
+    ProfilDeveloppeurTheme {
         DeveloperProfile(
             name = "Fabio Jorge",
             role = "Développeur junior",
@@ -215,7 +215,7 @@ fun DeveloperProfilePreview() {
 @Preview(showBackground = true)
 @Composable
 fun DeveloperProfilePreviewSecond() {
-    MyApplicationTheme {
+    ProfilDeveloppeurTheme {
         DeveloperProfile(
             name = "Alice Martin",
             role = "Développeuse Android",
