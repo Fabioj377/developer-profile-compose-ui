@@ -6,7 +6,7 @@ val sampleProfile = DeveloperProfile(
     bio = "Étudiant en informatique, passionné par le développement web et mobile. " +
             "J’aime créer des applications modernes et découvrir de nouvelles technologies.",
     location = "France",
-    email = "prenom.nom@example.com",
+    email = "fabio.jorge@example.com",
     availability = "Disponible pour une alternance",
     skills = listOf(
         Skill("Kotlin", "Mobile"),
