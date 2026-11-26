@@ -1,112 +1,55 @@
-# Fiche Profil — Jetpack Compose
+# Profil développeur — Compose UI (v2)
 
 ## Description
 
-Cette application Android a été réalisée avec Kotlin et Jetpack Compose.
+Application Android réalisée avec Kotlin et Jetpack Compose qui présente le profil d'un développeur junior : avatar avec badge de disponibilité, présentation, liste de compétences, liste de projets, zone de contact et bouton d'action « Contacter ».
 
-L'objectif est de créer une fiche de profil développeur composée de plusieurs composants réutilisables. La fiche affiche le nom, le rôle, une courte biographie, une liste de compétences, la disponibilité ainsi qu'un bouton « Me contacter ».
+Cette version 2 fait évoluer la [première version](https://github.com/Fabioj377/developer-profile-compose) (fiche simple) vers une interface plus complète, avec Material Design 3 et un thème clair / sombre. Toutes les données sont locales et écrites dans le code Kotlin (`data/SampleData.kt`).
 
-## Notions utilisées
+## Captures d'écran
 
-- Jetpack Compose
-- `@Composable`
-- `Column`
-- `Text`
-- `Button`
-- `Spacer`
-- `Modifier`
-- `padding`
-- `fillMaxWidth`
-- Paramètres de composables
-- Callback avec `onClick`
-- `@Preview`
+| Thème clair | Thème sombre |
+|---|---|
+| ![Thème clair](screenshots/profil_clair.png) | ![Thème sombre](screenshots/profil_sombre.png) |
 
-## Questions
+## Composants Compose utilisés
 
-### 1. Pourquoi découper l'UI en plusieurs composables ?
+- `Text` : nom, rôle, descriptions, titres de sections
+- `Button` : action principale « Contacter »
+- `Icon` : localisation, e-mail, badge, projets
+- `Image` : avatar (drawable vectoriel placeholder)
+- `Card` : bio, compétences, projets, contact
+- `OutlinedTextField` en lecture seule : e-mail, localisation, disponibilité
+- `Surface` : en-tête du profil, pastilles de technologies, barre d'action
 
-Découper l'interface en plusieurs composables permet de mieux organiser le code. Chaque composant possède un rôle précis et peut être réutilisé plus facilement.
+## Layouts utilisés
 
-Par exemple, `ProfileHeader` est responsable de l'affichage du nom et du rôle, tandis que `SkillsSection` s'occupe des compétences.
+- `Column` : structure verticale de l'écran et contenu des cartes
+- `Row` : icône + texte (localisation, titre de projet), pastilles de technologies
+- `Box` : avatar avec badge superposé en bas à droite
+- `Spacer` : espacements entre éléments
+- `Surface` : zone d'en-tête colorée et barre d'action cohérentes avec le thème
 
-### 2. Quel est l'intérêt de passer les données en paramètres ?
+## Liste affichée avec LazyColumn / LazyRow
 
-Passer les données en paramètres permet de rendre les composables réutilisables.
+- **`LazyRow`** : les compétences, affichées horizontalement avec le composable réutilisable `SkillCard` (`items(profile.skills, key = { it.name })`).
+- **`LazyColumn`** : tout le contenu défilant de l'écran, dont la liste des projets affichée avec `ProjectCard` (`items(profile.projects, key = { it.title })`). Les éléments ne sont composés que lorsqu'ils deviennent visibles, et la `key` aide Compose à identifier chaque élément.
 
-Par exemple, `DeveloperProfile` peut afficher Fabio ou Alice sans avoir besoin de créer deux interfaces différentes. Il suffit de lui transmettre des données différentes.
+## Choix de thème (Material Design 3)
 
-### 3. Pourquoi utiliser `modifier: Modifier = Modifier` ?
+- **`colorScheme`** : palette indigo / teal, définie en clair (`LightColors`) et en sombre (`DarkColors`). Le thème suit le réglage du système via `isSystemInDarkTheme()`. Les couleurs dynamiques (Material You) sont désactivées pour garder une identité visuelle stable.
+- **`typography`** : styles personnalisés (`headlineMedium`, `titleLarge`, `titleMedium`, `bodyLarge`, `bodyMedium`, `labelMedium`) pour une hiérarchie claire.
+- **`shapes`** : coins arrondis `small` (8 dp, pastilles), `medium` (16 dp, cartes) et `large` (28 dp, en-tête).
+- Les composables utilisent uniquement `MaterialTheme.colorScheme / typography / shapes`, jamais de couleur en dur, donc le passage clair / sombre est automatique.
 
-Cela permet au composant qui appelle le composable de personnaliser son affichage sans modifier directement son fonctionnement.
+## Quelles notions du chapitre Compose UI ai-je réutilisées ?
 
-Le paramètre possède une valeur par défaut, ce qui permet également d'utiliser le composable sans être obligé de fournir un `Modifier`.
-
-### 4. Quelle différence entre padding externe et padding interne ?
-
-Le padding externe correspond à l'espace appliqué autour d'un composant par son parent.
-
-Le padding interne correspond à l'espace ajouté à l'intérieur du composant afin d'éloigner son contenu de ses bords.
-
-Dans le projet, `DeveloperProfile` reçoit notamment un `Modifier` depuis son parent et ajoute ensuite son propre `padding(16.dp)`.
-
-### 5. Pourquoi l'ordre des modifiers est-il important ?
-
-Les modifiers sont appliqués dans l'ordre dans lequel ils sont écrits. Changer leur ordre peut donc modifier le résultat visuel ou le comportement du composant.
-
-Dans le projet, on utilise par exemple :
-
-```kotlin
-modifier
-    .fillMaxWidth()
-    .padding(16.dp)
-```
-
-Le composant prend d'abord la largeur disponible puis le padding est appliqué.
-
-### 6. Comment rendre un composable réutilisable ?
-
-Un composable devient plus réutilisable lorsqu'il ne contient pas toutes ses données en dur.
-
-Il peut recevoir ses données grâce à des paramètres et permettre la personnalisation de son apparence avec un `Modifier`.
-
-Par exemple :
-
-```kotlin
-@Composable
-fun ProfileHeader(
-    name: String,
-    role: String,
-    modifier: Modifier = Modifier
-)
-```
-
-Le même `ProfileHeader` peut ainsi afficher différents noms et différents rôles.
-
-### 7. Pourquoi remonter les actions via des callbacks ?
-
-Un callback permet au composable de signaler qu'une action a été effectuée sans décider lui-même de ce qui doit se produire.
-
-Dans le projet, `ContactButton` reçoit :
-
-```kotlin
-onClick: () -> Unit
-```
-
-Le bouton appelle cette fonction lorsqu'il est utilisé. Cela permet de séparer l'affichage du bouton de l'action qui sera exécutée.
+J'ai réutilisé les composants fondamentaux (`Text`, `Button`, `Icon`, `Image`, `Card`, `OutlinedTextField`), les layouts (`Column`, `Row`, `Box`, `Spacer`, `Surface`), les listes modernes (`LazyColumn` et `LazyRow` avec des composables d'item réutilisables), Material Design 3 (`colorScheme`, `typography`, `shapes`) et le thème clair / sombre. Je garde aussi les bases de la v1 : composables avec paramètres, `Modifier`, callback `onClick` et `@Preview`.
 
 ## Previews
 
-Deux previews sont présentes dans le projet :
+Des previews clair et sombre existent pour l'écran complet (`ProfileScreen.kt`) et pour l'en-tête (`ProfileHeader.kt`), plus une preview par carte.
 
-- `DeveloperProfilePreview` affiche le profil de Fabio Jorge.
-- `DeveloperProfilePreviewSecond` affiche le profil d'Alice Martin.
+## Lancer le projet
 
-Elles permettent de vérifier que le même composable peut fonctionner avec des données différentes.
-
-## Capture d'écran
-
-Ajouter ici la capture d'écran montrant les previews et/ou l'application exécutée sur l'émulateur.
-
-```markdown
-![Aperçu de l'application](screenshots/capture.png)
-```
+Ouvrir le dossier dans Android Studio, laisser Gradle se synchroniser, puis lancer sur un émulateur ou un appareil (minSdk 26).
